@@ -27,48 +27,60 @@ grammar["T"] = Rule("T", [["F","T'"]])
 grammar["T'"] = Rule("T'", [ ["*","F","T'"], "epsilon" ])
 grammar["F"] = Rule("F", [ ["(","E",")"] , "id" ])
 
-def rule_generator(r):
+def rule_generator(src):
     #All characters are separated by space.
+    with open(src,'r') as f:
+        src_string = f.read()
     buff = ""
     para = []#The final parameters of Rule, first element being heads, second element being tails
-    curr = []#appending of list of lists 
+    curr = []#appending of list of lists
+    gram = {} 
     string_ongoing = True
-    for i in range(len(r)):
-        char = r[i]
-        if(char==':'):
-            para.append(buff)
-            buff=''
-            continue
-        if(char == ' '):
-            string_ongoing = False
-        if(char=='|'):
-            string_ongoing = False
-            if(buff!=''):
-                curr.append(buff)
-            if(len(curr)==1 and curr[0]=='epsilon'):
-                para.append(curr[0])
-            elif(len(curr)>0):
-                para.append(curr)
-            buff=""
-            curr = []
-            continue
-        if(string_ongoing):
-            buff+=char
-        else:
-            if(buff!=''):
-                curr.append(buff)
-            buff = ''
+    r_list = src_string.split("\n")
+    for j in range(len(r_list)):
+        r = r_list[j]
+        buff = ""
+        para = []#The final parameters of Rule, first element being heads, second element being tails
+        curr = []#appending of list of lists
         string_ongoing = True
-    if(buff!=''):
-        curr.append(buff)
-    if(len(curr)==1 and curr[0]=='epsilon'):
-        para.append(curr[0])
-        curr = []
-    elif(len(curr)>0):
-        para.append(curr)
-        curr = []
-    grammar[para[0]] = Rule(para[0],para[1:])
-    print(para)
+        for i in range(len(r)):
+            char = r[i]
+            if(char==':'):
+                para.append(buff)
+                buff=''
+                continue
+            if(char == ' '):
+                string_ongoing = False
+            if(char=='|'):
+                string_ongoing = False
+                if(buff!=''):
+                    curr.append(buff)
+                if(len(curr)==1 and curr[0]=='epsilon'):
+                    para.append(curr[0])
+                elif(len(curr)>0):
+                    para.append(curr)
+                buff=""
+                curr = []
+                continue
+            if(string_ongoing):
+                buff+=char
+            else:
+                if(buff!=''):
+                    curr.append(buff)
+                buff = ''
+            string_ongoing = True
+        if(buff!=''):
+            curr.append(buff)
+        if(len(curr)==1 and curr[0]=='epsilon'):
+            para.append(curr[0])
+            curr = []
+        elif(len(curr)>0):
+            para.append(curr)
+            curr = []
+        gram[para[0]] = Rule(para[0],para[1:])
+        #print(para)
+    #print(gram)
+    return gram
 
 reserved = [
     "if",
