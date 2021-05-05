@@ -25,7 +25,7 @@ grammar["E"] = Rule("E", [ ["T","E'"] ])
 grammar["E'"] = Rule("E'", [ ["+","T","E'"],"epsilon"])
 grammar["T"] = Rule("T", [["F","T'"]])
 grammar["T'"] = Rule("T'", [ ["*","F","T'"], "epsilon" ])
-grammar["F"] = Rule("F", [ ["(","E",")"] , "id" ])
+grammar["F"] = Rule("F", [ ["(","E",")"] , ["id"] ])
 
 reserved = [
     "if",
@@ -162,7 +162,7 @@ def follow_recursive(rule, history):
     return change        
 
 
-def find_follow_set():
+def find_first_and_follow_set(grammar):
 
 
     for i in grammar.keys():
@@ -178,13 +178,20 @@ def find_follow_set():
 
 
 
+if __name__ == "__main__":
+
+    find_first_and_follow_set(grammar)
+    print(grammar["E"].first)
+    print(grammar["E'"].first)
+    print(grammar["T"].first)
+    print(grammar["T'"].first)
+    print(grammar["F"].first)
 
 
-find_follow_set()
-print(grammar["E"].follow)
-print(grammar["E'"].follow)
-print(grammar["T"].follow)
-print(grammar["T'"].follow)
-print(grammar["F"].follow)
+    print(grammar["E"].follow)
+    print(grammar["E'"].follow)
+    print(grammar["T"].follow)
+    print(grammar["T'"].follow)
+    print(grammar["F"].follow)
 
 
