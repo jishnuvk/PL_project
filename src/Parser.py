@@ -1,9 +1,9 @@
 import Grammar
 from Tree import Tree, Node
 
-grammar = Grammar.grammar
+grammar = Grammar.rule_generator('grammar.txt')
 
-Grammar.find_first_and_follow_set(grammar)
+# Grammar.find_first_and_follow_set(grammar)
 
 def build_parse_table(grammar):
 
@@ -42,9 +42,9 @@ def build_parse_table(grammar):
 
 class Parser():
 
-    def __init__(self, grammar):
+    def __init__(self, grammar, start):
 
-        Grammar.find_first_and_follow_set(grammar)
+        Grammar.find_first_and_follow_set(grammar, start)
         self.production_table, self.parse_table = build_parse_table(grammar)
 
     def parse(self, token_list, start):
@@ -58,39 +58,71 @@ class Parser():
 
             production_id = self.parse_table[current_node.name][token_list[i]]
             children = []
+            tail_symbols = []
 
-            if(Grammar.terminal(self.production_table[production_id][1][0])):
-                i+=1
+            for symbol in self.production_table[production_id][1]:
+                if(Grammar.terminal(symbol)):
+                    i+=1
+                else:
+                    break   
             
             if(self.production_table[production_id][1] == 'epsilon'):
 
                 children.append(Node('epsilon',current_node,True))
             else:
                 for j in self.production_table[production_id][1]:
-                    node = 0
+                    
                     if Grammar.terminal(j):
                         node = Node(j,current_node,True)
                     else:
                         node = Node(j,current_node)
-                    children.append(node)        
+                    children.append(node)
+                
+                temp = []
+                for j in reversed(self.production_table[production_id][1]):
+                    
+                    if Grammar.terminal(j):
+                        temp.append(j)
+                    else:
+                        tail_symbols = temp
+                        break
+            
 
                     
             current_node.set_children(children)
+            current_node.set_tail_symbols(list(reversed(tail_symbols)))
+            current_node, tail_symbols = tree.next([])
 
-            current_node = tree.next()
+            for symbol in tail_symbols:
+                if(symbol == token_list[i]):
+                    i+=1
+                else:
+                    break
 
-            if(current_node == 0):
+
+            if(current_node == 0 or token_list[i] == '$'):
                 break
         
         return tree
 
 if __name__ == "__main__":
 
-    parser = Parser(grammar)
+    # print(grammar.keys())
+    parser = Parser(grammar, "Statement")
 
-    token_list = ['id','*','id','+','id',"$"]
 
-    tree = parser.parse(token_list, 'E')    
+    token_list = ['(', 'id', '+' , 'literal', '+', 'literal', ')', '+', '(', 'id', '+', 'id', ')', '$']
+    # token_list = ['(','id',')']
+    # token_list = ['(','id',')', '+', '(', 'id', ')', "$"]
+
+    # for i in parser.parse_table:
+    #     print(i,parser.parse_table[i])
+
+    # for i in range(len(parser.production_table)):
+    #     print(i, parser.production_table[i])    
+
+    # print(parser.production_table)
+    tree = parser.parse(token_list, 'Statement')    
 
 
     print(tree)

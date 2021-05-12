@@ -21,11 +21,11 @@ grammar = {}
 # T’ -> *F T’ | Є
 # F  -> (E) | id
 
-grammar["E"] = Rule("E", [ ["T","E'"] ])
-grammar["E'"] = Rule("E'", [ ["+","T","E'"],"epsilon"])
-grammar["T"] = Rule("T", [["F","T'"]])
-grammar["T'"] = Rule("T'", [ ["*","F","T'"], "epsilon" ])
-grammar["F"] = Rule("F", [ ["(","E",")"] , ["id"] ])
+# grammar["E"] = Rule("E", [ ["T","E'"] ])
+# grammar["E'"] = Rule("E'", [ ["+","T","E'"],"epsilon"])
+# grammar["T"] = Rule("T", [["F","T'"]])
+# grammar["T'"] = Rule("T'", [ ["*","F","T'"], "epsilon" ])
+# grammar["F"] = Rule("F", [ ["(","E",")"] , ["id"] ])
 
 def rule_generator(src):
     #All characters are separated by space.
@@ -124,6 +124,7 @@ symbols = [
     "<-",
     '"',
     ":",
+    "^",
 ]
 
 def terminal(x):
@@ -134,7 +135,7 @@ def terminal(x):
     else:
         return False    
 
-def find_first_set(rule):
+def find_first_set(rule, grammar):
 
     contains_epsilon = False
 
@@ -153,8 +154,7 @@ def find_first_set(rule):
                         rule.first.add(j)
                         break
                     else:
-                        
-                        tail_contains_epsilon , tail_first_set = find_first_set(grammar[j])
+                        tail_contains_epsilon , tail_first_set = find_first_set(grammar[j], grammar)
                         rule.first.update(tail_first_set)
                         if(not tail_contains_epsilon):
                             break
@@ -164,9 +164,9 @@ def find_first_set(rule):
 
     return contains_epsilon, rule.first
 
-def initialize_follow_set(rule):
+def initialize_follow_set(rule, start, grammar):
 
-    if(rule.head == "E"):
+    if(rule.head == start):
         rule.follow.add("$")
 
     for i in (rule.tails):
@@ -177,7 +177,7 @@ def initialize_follow_set(rule):
                     grammar[i[j]].follow.add(i[j+1])            
 
 
-def follow_recursive(rule, history):
+def follow_recursive(rule, history, grammar):
 
     change = False
     history.add(rule.head)
@@ -212,23 +212,23 @@ def follow_recursive(rule, history):
                 
 
 
-                c = follow_recursive(grammar[i[j]], history)
+                c = follow_recursive(grammar[i[j]], history, grammar)
                 change = change or c     
     return change        
 
 
-def find_first_and_follow_set(grammar):
+def find_first_and_follow_set(grammar, start):
 
 
     for i in grammar.keys():
-        find_first_set(grammar[i])
-        initialize_follow_set(grammar[i])
+        find_first_set(grammar[i], grammar)
+        initialize_follow_set(grammar[i], start, grammar)
     
 
 
     change = True
     while(change):
-        change = follow_recursive(grammar['E'], set())
+        change = follow_recursive(grammar[start], set(), grammar)
 
 
 

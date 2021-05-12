@@ -6,14 +6,19 @@ class Node():
         self.parent = parent
         self.finished = terminal
         self.children = []
+        self.tail_symbols = []
         
     def set_children(self,children):
 
         self.children = children
 
+    def set_tail_symbols(self, tail_symbols):
+
+        self.tail_symbols = tail_symbols    
+
     def __str__(self):
         
-        if(self.children != []):
+        if(self.children != [] and self.children[0].name != 'epsilon'):
             string = self.name + " [ "
 
             for i in self.children:
@@ -32,21 +37,25 @@ class Tree():
         self.root = root
         self.current = root
 
-    def next(self):
-
+    def next(self, tail_symbols = []):
+        
         for i in self.current.children:
 
             if(i.finished == False):
                 self.current = i
                 self.current.finished = True
-                return i                
+                return i, tail_symbols
 
+               
+                
+                                    
+        tail_symbols.extend(self.current.tail_symbols)
         self.current = self.current.parent
         
         if self.current == 0:
             return 0
         
-        return self.next()  
+        return self.next(tail_symbols)  
 
     def __str__(self):
 
