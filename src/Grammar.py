@@ -45,13 +45,13 @@ def rule_generator(src):
         string_ongoing = True
         for i in range(len(r)):
             char = r[i]
-            if(char==':'):
+            if(char=='@'):
                 para.append(buff)
                 buff=''
                 continue
             if(char == ' '):
                 string_ongoing = False
-            if(char=='|'):
+            if(char=='?'):
                 string_ongoing = False
                 if(buff!=''):
                     curr.append(buff)
@@ -89,6 +89,7 @@ reserved = [
     "while",
     "function",
     "for",
+    "return",
     "in",
     "next",
     "break",
@@ -125,6 +126,13 @@ symbols = [
     '"',
     ":",
     "^",
+    "=",
+    "|",
+    "&",
+    "&&",
+    "||",
+    "%%",
+    "!"
 ]
 
 def terminal(x):
