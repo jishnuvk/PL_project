@@ -93,6 +93,7 @@ reserved = [
     "in",
     "next",
     "break",
+    "newline",
     "TRUE",
     "FALSE",
     "NULL",

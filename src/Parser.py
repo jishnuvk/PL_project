@@ -116,7 +116,7 @@ if __name__ == "__main__":
     parser = Parser(grammar, "StatementList")
 
     # token_list = ['(','id',')']
-    token_list = ['(','id',')', '+', '(', 'id', ')', "$"]
+    token_list = ['newline','id','<-','literal','/','literal','*','(','literal','-','literal',')','newline','for','(','id','in','literal',':','literal',')','{','newline' ,'if','(','id','>','literal',')','{','newline','id','(',')','newline','}','newline','}', '$']
 
     # for i in parser.parse_table:
     #     print(i,parser.parse_table[i])

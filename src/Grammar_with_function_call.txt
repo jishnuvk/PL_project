@@ -1,12 +1,12 @@
-StatementList@ Statement StatementList ? epsilon
+StatementList@ newline Statement StatementList ? epsilon
 Statement@ Expression ? IF_Stmt Braces ELSE ? WHILE_Stmt Braces ? break ? next ? return Expression ? FOR_Stmt Braces
 Expression@ ExpressionLvl0 RestOfTheExpressionLvl0
 ExpressionLvl0@ Term Operator
 RestOfTheExpressionLvl0@ <- Expression ? epsilon
-Term@ ( Expression ) ? id PostFix ? literal
+Term@ ( Expression ) ? id Postfix ? literal
 Operator@ + ExpressionLvl0 ? - ExpressionLvl0 ? * ExpressionLvl0 ? / ExpressionLvl0 ? %% ExpressionLvl0 ? ^ ExpressionLvl0 ? epsilon
-PostFix@ ( ArgList ) ? epsilon
-ArgList@ id ArgList ? epsilon
+Postfix@ ( Arglist ) ? epsilon
+Arglist@ id Arglist ? epsilon
 Iterable@ id ? literal : literal
 IF_Stmt@ if Condition Dump
 WHILE_Stmt@ while Condition Dump
@@ -15,6 +15,6 @@ Condition@ ( Expression_IF )
 Condition_FOR@ ( Expression_FOR )
 Expression_IF@ id > id ? id < id ? id >= id ? id <= id ? id == id ? id != id
 Expression_FOR@ id in Iterable
-ELSE@ else Braces ? epsilon
-Braces@ { StatementList } ? Statement
+ELSE@ else Statement ? epsilon
+Braces@ { StatementList newline } ? Statement
 Dump@ epsilon
