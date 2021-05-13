@@ -1,0 +1,36 @@
+StatementList@ newline Statement StatementList ? epsilon
+Statement@ Expression ? IF_Stmt Braces ELSE ? WHILE_Stmt Braces ? break ? next ? return Expression ? FOR_Stmt Braces ? epsilon
+Expression@ ExpressionLvl1 RestOfTheExpressionLvl1 
+ExpressionLvl1@ ExpressionLvl2 RestOfTheExpressionLvl2
+RestOfTheExpressionLvl1@ = Expression ? epsilon
+ExpressionLvl2@ ExpressionLvl3 RestOfTheExpressionLvl3
+RestOfTheExpressionLvl2@ <- ExpressionLvl1 ? epsilon
+ExpressionLvl3@ ExpressionLvl4 RestOfTheExpressionLvl4
+RestOfTheExpressionLvl3@ | ExpressionLvl2 ? || ExpressionLvl2 ? epsilon
+ExpressionLvl4@ ExpressionLvl5 RestOfTheExpressionLvl5
+RestOfTheExpressionLvl4@ & ExpressionLvl3 ? && ExpressionLvl3 ? epsilon
+ExpressionLvl5@ ExpressionLvl6 RestOfTheExpressionLvl6
+RestOfTheExpressionLvl5@ ! ExpressionLvl4 ? epsilon
+ExpressionLvl6@ ExpressionLvl7 RestOfTheExpressionLvl7
+RestOfTheExpressionLvl6@ > ExpressionLvl5 ? < ExpressionLvl5 ? >= ExpressionLvl5 ? <= ExpressionLvl5 ? == ExpressionLvl5 ? != ExpressionLvl5 ? epsilon
+ExpressionLvl7@ ExpressionLvl8 RestOfTheExpressionLvl8
+RestOfTheExpressionLvl7@ + ExpressionLvl6 ? - ExpressionLvl6 ? epsilon
+ExpressionLvl8@ ExpressionLvl9 RestOfTheExpressionLvl9
+RestOfTheExpressionLvl8@ * ExpressionLvl7 ? / ExpressionLvl7 ? epsilon
+ExpressionLvl9@ ExpressionLvl10 RestOfTheExpressionLvl10
+RestOfTheExpressionLvl9@ %% ExpressionLvl8 ? epsilon
+ExpressionLvl10@ ( Expression ) ? id Postfix ? literal
+RestOfTheExpressionLvl10@ ^ ExpressionLvl9 ? epsilon
+Postfix@ ( Arglist ) ? epsilon
+Arglist@ id Arglist ? epsilon
+IF_Stmt@ if Condition Dump
+WHILE_Stmt@ while Condition Dump
+FOR_Stmt@ for Condition_FOR Dump
+Condition@ ( Expression )
+Condition_FOR@ ( Expression_FOR )
+Expression_FOR@ id in Iterable
+ELSE@ else NEXT_IF ? epsilon
+NEXT_IF@ Braces ? Statement
+Braces@ { StatementList } ? Statement
+Dump@ epsilon
+Iterable@ id ? literal : literal

@@ -1,5 +1,5 @@
 StatementList@ newline Statement StatementList ? epsilon
-Statement@ Expression ? IF_Stmt Braces ELSE ? WHILE_Stmt Braces ? break ? next ? return Expression ? FOR_Stmt Braces
+Statement@ Expression ? IF_Stmt Braces ELSE ? WHILE_Stmt Braces ? break ? next ? return Expression ? FOR_Stmt Braces ? epsilon
 Expression@ ExpressionLvl0 RestOfTheExpressionLvl0
 ExpressionLvl0@ Term Operator
 RestOfTheExpressionLvl0@ <- Expression ? epsilon
@@ -15,6 +15,7 @@ Condition@ ( Expression_IF )
 Condition_FOR@ ( Expression_FOR )
 Expression_IF@ id > id ? id < id ? id >= id ? id <= id ? id == id ? id != id
 Expression_FOR@ id in Iterable
-ELSE@ else Statement ? epsilon
-Braces@ { StatementList newline } ? Statement
+ELSE@ else NEXT_IF ? epsilon
+NEXT_IF@ Braces ? Statement
+Braces@ { StatementList } ? Statement
 Dump@ epsilon
