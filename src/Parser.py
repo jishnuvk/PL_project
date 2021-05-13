@@ -1,7 +1,7 @@
 import Grammar
 from Tree import Tree, Node
 
-grammar = Grammar.rule_generator('grammar.txt')
+grammar = Grammar.rule_generator('Grammar_without_function_call.txt')
 
 # Grammar.find_first_and_follow_set(grammar)
 
@@ -37,6 +37,11 @@ def build_parse_table(grammar):
                     for k in grammar[first].first:
                         parse_table[i][k] = production_id    
 
+    #for i in parse_table:
+    #    print(i, end=" ")
+    #    for i in parse_table[i]:
+    #        print(i, end=" ")
+    #    print("\n")
     return production_table, parse_table
 
 
@@ -55,7 +60,7 @@ class Parser():
         i = 0
 
         while(i < len(token_list)):
-
+            #print(str(token_list[i])+' '+str(i)+' '+current_node.name)
             production_id = self.parse_table[current_node.name][token_list[i]]
             children = []
             tail_symbols = []
@@ -108,12 +113,10 @@ class Parser():
 if __name__ == "__main__":
 
     # print(grammar.keys())
-    parser = Parser(grammar, "Statement")
+    parser = Parser(grammar, "StatementList")
 
-
-    token_list = ['(', 'id', '+' , 'literal', '+', 'literal', ')', '+', '(', 'id', '+', 'id', ')', '$']
     # token_list = ['(','id',')']
-    # token_list = ['(','id',')', '+', '(', 'id', ')', "$"]
+    token_list = ['(','id',')', '+', '(', 'id', ')', "$"]
 
     # for i in parser.parse_table:
     #     print(i,parser.parse_table[i])
@@ -122,7 +125,7 @@ if __name__ == "__main__":
     #     print(i, parser.production_table[i])    
 
     # print(parser.production_table)
-    tree = parser.parse(token_list, 'Statement')    
+    tree = parser.parse(token_list, 'StatementList')    
 
 
     print(tree)
