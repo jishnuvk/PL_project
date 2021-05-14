@@ -1,8 +1,18 @@
-class Node():
+from treelib import Node, Tree
 
-    def __init__(self, name, parent, terminal = False):
+count = 0
+
+class Node_Obj():
+
+    def __init__(self, name, value, parent, terminal = False):
         
         self.name = name
+        self.value = value
+        if self.value != None:
+            self.name = "(" + name +"," + str(self.value) + ")"
+        global count
+        count += 1
+        self.ID = count
         self.parent = parent
         self.finished = terminal
         self.children = []
@@ -17,20 +27,19 @@ class Node():
         self.tail_symbols = tail_symbols    
 
     def __str__(self):
-        
+        string = self.name
+
         if(self.children != [] and self.children[0].name != 'epsilon'):
-            string = self.name + " [ "
+            string = " [ "
 
             for i in self.children:
                 string+= str(i) + " "
 
             string += "] "
 
-            return string    
-        else:
-            return self.name
-
-class Tree():
+        return string    
+        
+class Tree_Obj():
 
     def __init__(self,root):
 
@@ -40,14 +49,10 @@ class Tree():
     def next(self, tail_symbols = []):
         
         for i in self.current.children:
-
             if(i.finished == False):
                 self.current = i
                 self.current.finished = True
-                return i, tail_symbols
-
-               
-                
+                return i, tail_symbols    
                                     
         tail_symbols.extend(self.current.tail_symbols)
         self.current = self.current.parent
@@ -61,12 +66,20 @@ class Tree():
 
         return str(self.root)          
 
+def display_tree(tree, treeobj_root,idx_list):
+    count = 0
+    for i in treeobj_root.children:
+        tree.create_node(str(count) + " " + i.name, i.ID, parent = treeobj_root.ID)
+        count += 1
+    for i in treeobj_root.children:    
+        display_tree(tree, i,idx_list)
+
 
 if __name__ == "__main__":
 
-    node = Node("root",0)
+    node = Node_Obj("root",0)
 
-    
+    ''' 
     tree = Tree(node)
     children = [Node("child1",node),Node("child2",node),Node("child3",node)]
     node.set_children(children)
@@ -76,8 +89,4 @@ if __name__ == "__main__":
     node.set_children(children)
 
     children = [Node("child11",node),Node("child21",node),Node("child31",node)]
-
-
-    print(tree)
-
-
+    '''
