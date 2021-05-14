@@ -1,5 +1,5 @@
 import Grammar
-from Tree import Tree, Node
+from Tree import Node, Tree, Tree_Obj, Node_Obj, display_tree    
 
 grammar = Grammar.rule_generator('grammar.txt')
 
@@ -49,14 +49,22 @@ class Parser():
 
     def parse(self, token_list, start):
 
- 
-        tree = Tree(Node(start,0))
+        token_list2 = []
+        for i in token_list:
+            if type(i) != tuple:
+                token_list2.append( (i,None))
+            else:
+                token_list2.append(i)
+
+        print(token_list2) 
+        tree = Tree_Obj(Node_Obj(start,None, 0 ))
         current_node = tree.root
         i = 0
 
         while(i < len(token_list)):
-
-            production_id = self.parse_table[current_node.name][token_list[i]]
+            
+           
+            production_id = self.parse_table[current_node.name][token_list2[i][0]]
             children = []
             tail_symbols = []
 
@@ -68,14 +76,20 @@ class Parser():
             
             if(self.production_table[production_id][1] == 'epsilon'):
 
-                children.append(Node('epsilon',current_node,True))
+                children.append(Node_Obj('epsilon',None, current_node,True))
             else:
-                for j in self.production_table[production_id][1]:
-                    
+                for j in self.production_table[production_id][1]:   
                     if Grammar.terminal(j):
-                        node = Node(j,current_node,True)
+                        if j in token_list:
+                            node = Node_Obj(j,token_list2[token_list.index(j)][1], current_node,True)
+                        else:
+                            node = Node_Obj(j, None, current_node, True)
                     else:
-                        node = Node(j,current_node)
+                        if j in token_list:
+                            print("This is me")
+                            node = Node_Obj(j,token_list2[token_list.index(j)][1], current_node)
+                        else:
+                            node = Node_Obj(j, None,current_node)
                     children.append(node)
                 
                 temp = []
@@ -105,24 +119,19 @@ class Parser():
         
         return tree
 
+
 if __name__ == "__main__":
 
     # print(grammar.keys())
     parser = Parser(grammar, "Statement")
 
-
-    token_list = ['(', 'id', '+' , 'literal', '+', 'literal', ')', '+', '(', 'id', '+', 'id', ')', '$']
-    # token_list = ['(','id',')']
-    # token_list = ['(','id',')', '+', '(', 'id', ')', "$"]
-
-    # for i in parser.parse_table:
-    #     print(i,parser.parse_table[i])
-
-    # for i in range(len(parser.production_table)):
-    #     print(i, parser.production_table[i])    
-
-    # print(parser.production_table)
+    token_list = ['(', ('id','print'), '+' , ('literal','Hello World'), '+', ('literal', 'Hello world'), ')', '+', '(', ('id', 'print'), '+', ('id', 'print'), ')', '$']
     tree = parser.parse(token_list, 'Statement')    
-
-
+    
     print(tree)
+    tree2 = Tree()
+    tree2.create_node(tree.root.name, tree.root.ID)
+    display_tree(tree2, tree.root)
+    print("This is the final tree")
+
+    tree2.show()
